@@ -102,10 +102,10 @@ Download the latest plugin file from [Releases](https://github.com/MipaSenpai/Mi
 ```bash
 cd webmap
 docker build -t mipmap-webmap .
-docker run -d --name mipmap-webmap -p 8000:8000 mipmap-webmap
+docker run -d --name mipmap-webmap -p 8100:8100 mipmap-webmap
 ```
 
-✅ **Done!** Visit `http://localhost:8000`
+✅ **Done!** Visit `http://localhost:8100`
 
 ---
 
@@ -114,10 +114,10 @@ docker run -d --name mipmap-webmap -p 8000:8000 mipmap-webmap
 ```bash
 cd webmap
 pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn main:app --host 0.0.0.0 --port 8100
 ```
 
-✅ **Done!** Visit `http://localhost:8000`
+✅ **Done!** Visit `http://localhost:8100`
 
 ---
 
@@ -143,8 +143,8 @@ Edit `plugins/mipmap/config.toml`:
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | `sendPlayers` | `boolean` | `true` | Enable player position tracking |
-| `api.chunks` | `string` | `"http://localhost:8000/api/chunks-data"` | Chunks data endpoint |
-| `api.players` | `string` | `"http://localhost:8000/api/players-data"` | Players data endpoint |
+| `api.chunks` | `string` | `"http://localhost:8100/api/chunks-data"` | Chunks data endpoint |
+| `api.players` | `string` | `"http://localhost:8100/api/players-data"` | Players data endpoint |
 | `mapLoading.batchSize` | `int` | `100` | Number of chunks to process per batch |
 | `mapLoading.maxAreas` | `int` | `10` | Maximum concurrent loading areas |
 | `blacklist.blocks` | `array` | `["air", "water", ...]` | Blocks to skip when finding surface |

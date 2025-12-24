@@ -5,8 +5,8 @@ sendPlayers = true
 
 # Warning: modify only if you understand the consequences
 [api]
-chunks = "http://localhost:8000/api/chunks-data"
-players = "http://localhost:8000/api/players-data"
+chunks = "http://localhost:8100/api/chunks-data"
+players = "http://localhost:8100/api/players-data"
 
 # Warning: modify only if you understand the consequences
 [mapLoading]
