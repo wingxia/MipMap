@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from pydantic import BaseModel
 
@@ -23,6 +23,8 @@ class BlockData(BaseModel):
 class ChunkData(BaseModel):
     dimension: str
     blocks: List[BlockData]
+    chunkX: Optional[int] = None
+    chunkZ: Optional[int] = None
 
 
 class ChunkRequest(BaseModel):

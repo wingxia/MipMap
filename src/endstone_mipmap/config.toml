@@ -9,6 +9,22 @@ chunks = "http://localhost:8100/api/chunks-data"
 players = "http://localhost:8100/api/players-data"
 
 # Warning: modify only if you understand the consequences
+[chunkSending]
+# Max in-flight HTTP requests for chunk uploads
+maxConcurrency = 4
+# Max queued chunks waiting to upload (0 disables limit)
+maxQueueSize = 2000
+
+# Optional dimension name aliases to match webmap folders
+[dimensionAliases]
+"minecraft:overworld" = "Overworld"
+"minecraft:nether" = "Nether"
+"minecraft:the_end" = "TheEnd"
+"overworld" = "Overworld"
+"nether" = "Nether"
+"the_end" = "TheEnd"
+
+# Warning: modify only if you understand the consequences
 [mapLoading]
 batchSize = 100
 maxAreas = 10
