@@ -70,6 +70,9 @@ class Map(Plugin):
         self.get_command("loadmap").executor = LoadmapCommand(self)
 
         self.batchTracker = BatchTracker(self)
+        self._pendingChunks = set()
+        self._sentChunks = set()
+        self._dimensionAliases = self.config.get("dimensionAliases", {})
 
         self._chunksQueue = mp.Queue()
         self._resultQueue = mp.Queue()
@@ -104,8 +107,24 @@ class Map(Plugin):
     def loadChunk(self, event: ChunkLoadEvent):
         chunkData = self._getСhunkData(event)
         
+        dimension = chunkData.get("chunk", {}).get("dimension")
         chunkData["chunkX"] = event.chunk.x
         chunkData["chunkZ"] = event.chunk.z
+        chunkData["dimension"] = dimension
+
+        chunkKey = (dimension, event.chunk.x, event.chunk.z)
+        if chunkKey in self._sentChunks or chunkKey in self._pendingChunks:
+            return
+
+        maxQueueSize = self.config.get("chunkSending", {}).get("maxQueueSize", 2000)
+        try:
+            if maxQueueSize and self._chunksQueue.qsize() >= maxQueueSize:
+                self.logger.warning(f"Chunk queue full ({maxQueueSize}). Dropping chunk {chunkKey}.")
+                return
+        except (NotImplementedError, AttributeError):
+            pass
+
+        self._pendingChunks.add(chunkKey)
         
         self._chunksQueue.put(chunkData)
     
@@ -124,10 +143,15 @@ class Map(Plugin):
         while not self._resultQueue.empty():
             try:
                 result = self._resultQueue.get_nowait()
-                status, chunkX, chunkZ = result
+                status, dimension, chunkX, chunkZ = result
+                chunkKey = (dimension, chunkX, chunkZ)
                 
                 if status == "success":
+                    self._pendingChunks.discard(chunkKey)
+                    self._sentChunks.add(chunkKey)
                     self.batchTracker.chunkProcessed(chunkX, chunkZ)
+                else:
+                    self._pendingChunks.discard(chunkKey)
                     
             except:
                 break
@@ -191,9 +215,14 @@ class Map(Plugin):
         
         chunkData = {
             "chunk": {
-                "dimension": world.name,
+                "dimension": self._normalizeDimensionName(world.name),
+                "chunkX": chunkX,
+                "chunkZ": chunkZ,
                 "blocks": blocksData
             }
         }
 
         return chunkData
+
+    def _normalizeDimensionName(self, dimension: str) -> str:
+        return self._dimensionAliases.get(dimension, dimension)
