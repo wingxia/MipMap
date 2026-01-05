@@ -93,6 +93,22 @@ Download the latest plugin file from [Releases](https://github.com/MipaSenpai/Mi
 
 **For LeviLamina**: You need to have [LeviStone](https://github.com/LiteLDev/LeviStone) installed.
 
+#### 🔧 Build the C++ Plugin (CMake)
+
+The C++ plugin build uses **Clang 15+** with **libc++** and pulls dependencies via **FetchContent**.
+
+```bash
+cmake -S . -B build \
+  -DCMAKE_CXX_COMPILER=clang++ \
+  -DMIPMAP_USE_CXX20=ON \
+  -DENDSTONE_PLUGIN_DIR=/path/to/endstone/plugins
+
+cmake --build build --config Release
+```
+
+The plugin binary is emitted directly to the Endstone plugin directory you pass in
+`ENDSTONE_PLUGIN_DIR`.
+
 ---
 
 ### Step 2️⃣: Launch the Web Server
